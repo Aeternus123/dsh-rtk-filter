@@ -1,0 +1,62 @@
+{
+  "name": "dsh-rtk-filter",
+  "version": "0.1.0",
+  "description": "DSH plugin: pipes oversized command output through the external rtk CLI and hands the model RTK's condensed output instead of the raw text (a tools/post-execute result transformer).",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aeternus123/dsh-rtk-filter.git"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "src",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "rtk",
+    "token-killer",
+    "output-filter",
+    "llm"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.0",
+    "@deepseek-ai/dsh-llm": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.6",
+    "@deepseek-ai/schemastery": "^3.18.0"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.0",
+    "@deepseek-ai/dsh-llm": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-system-prompt": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.6",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.6.0"
+  },
+  "scripts": {
+    "build": "rm -rf lib && tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test tests/rtk-filter.test.mjs tests/e2e-real-rtk.mjs",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "license": "MIT"
+}

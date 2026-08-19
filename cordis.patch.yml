@@ -1,0 +1,10 @@
+# dsh bundle layer: mount the rtk-filter plugin after the shell tooling,
+# so its tools/post-execute transformer sees every bash/job_output result.
+- insert:
+    - id: rtk-filter
+      name: 'dsh-rtk-filter'
+      config:
+        # rtk must be on PATH (or set command to its absolute path).
+        command: rtk
+        # Only outputs larger than this many bytes are piped through rtk.
+        minBytes: 2048

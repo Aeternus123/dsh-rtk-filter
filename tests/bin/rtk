@@ -1,0 +1,12 @@
+#!/bin/sh
+# Stub rtk for the dsh-rtk-filter test suite. Dispatch on the first argument:
+#   (none)  -> condense stdin: keep the first 20 lines, summarize the rest
+#   --echo  -> pass stdin through verbatim (rtk made no change)
+#   --fail  -> read stdin, write an error to stderr, exit non-zero
+#   --sleep -> hang (exercises the plugin's timeout path)
+case "$1" in
+  --echo) cat ;;
+  --fail) cat > /dev/null; echo "rtk exploded" >&2; exit 2 ;;
+  --sleep) sleep 30; exit 0 ;;
+  *) awk 'NR <= 20 { print } { n = NR } END { if (n > 20) print "... [stub rtk: condensed " n " lines to 20]" }' ;;
+esac

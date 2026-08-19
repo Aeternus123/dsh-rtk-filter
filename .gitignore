@@ -1,0 +1,13 @@
+# Dependencies (local dev symlinks to the harness checkout)
+node_modules/
+
+# Build output
+lib/
+
+# npm
+*.tgz
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+*.log
