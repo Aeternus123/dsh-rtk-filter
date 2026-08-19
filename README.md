@@ -1,9 +1,63 @@
 # dsh-rtk-filter
 
+> A [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH) plugin that pipes oversized command output through the [rtk](https://github.com/rtk-ai/rtk) CLI and hands the model RTK's condensed text instead of the raw output — a `tools/post-execute` result transformer that slashes token/context usage.
+
 一个 DeepSeek Harness（DSH）插件：执行命令时自动调用系统命令 `rtk` 过滤输出。
 当 `bash` / `job_output` 等工具返回超过阈值的纯文本结果时，插件把原始输出通过
 stdin 管道交给 `rtk`，把 RTK 精简后的文本作为大模型最终看到的内容，从而显著减少
 上下文占用。
+
+## 安装 / Installation
+
+仓库已包含编译产物（`lib/`），**clone 后无需构建即可挂载**。
+
+### 方式一：GitHub 安装（推荐）
+
+```sh
+# 1) 用 dsh CLI 直接安装（需要本机装有 gh 或可访问 GitHub）
+dsh plugin --profile web add github:Aeternus123/dsh-rtk-filter
+
+# 2) 或在 profile 的 node_modules 放符号链接/拷贝 + patch 挂载（见下方示例）
+```
+
+### 方式二：npm 安装（发布后）
+
+```sh
+dsh plugin --profile web add dsh-rtk-filter
+# 或
+npm install dsh-rtk-filter
+```
+
+### 方式三：本地挂载（开发）
+
+```sh
+mkdir -p ~/.dsh/profiles/web/node_modules
+ln -s /path/to/dsh-rtk-filter ~/.dsh/profiles/web/node_modules/dsh-rtk-filter
+```
+
+无论哪种方式，最后在 profile 的 `cordis.patch.yml` 里挂载插件（包内自带 `cordis.patch.yml`，用
+`dsh plugin add` 安装时自动生效；手动挂载时追加）：
+
+```yaml
+- insert:
+    - id: rtk-filter
+      name: 'dsh-rtk-filter'
+      config:
+        command: /opt/homebrew/bin/rtk   # rtk 绝对路径（或裸名 rtk，插件自动探测候选目录）
+        args: ['pipe']                    # stdin 进、stdout 出
+        minBytes: 2048
+```
+
+**前置条件**：系统装有 [rtk](https://github.com/rtk-ai/rtk)（如 `brew install rtk`）；未安装时插件静默降级，不影响任何命令。
+
+## 开发 / Development
+
+```sh
+npm install          # 安装 @deepseek-ai/* dev 依赖（node_modules 用于测试）
+npm run build        # tsc → lib/
+npm test             # 单元 + 集成测试（tests/bin/rtk 为 stub；装了真实 rtk 会额外跑 e2e）
+npm run typecheck
+```
 
 ## 核心思路：注入点在哪里（调研结论）
 
