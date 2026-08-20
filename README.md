@@ -20,15 +20,8 @@ dsh plugin --profile web add github:Aeternus123/dsh-rtk-filter
 # 2) 或在 profile 的 node_modules 放符号链接/拷贝 + patch 挂载（见下方示例）
 ```
 
-### 方式二：npm 安装（发布后）
 
-```sh
-dsh plugin --profile web add dsh-rtk-filter
-# 或
-npm install dsh-rtk-filter
-```
-
-### 方式三：本地挂载（开发）
+### 方式二：本地挂载（开发）
 
 ```sh
 mkdir -p ~/.dsh/profiles/web/node_modules
